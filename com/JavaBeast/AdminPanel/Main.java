@@ -3,9 +3,11 @@ package com.JavaBeast.AdminPanel;
 import com.JavaBeast.AdminPanel.Panel.AdminCommand;
 import com.JavaBeast.AdminPanel.Panel.AdminPanel;
 import com.JavaBeast.AdminPanel.Panel.ChatOptions.ChatOptionsPanel;
+import com.JavaBeast.AdminPanel.Panel.GameOptions.GameOptionsPanel;
 import com.JavaBeast.AdminPanel.Panel.ServerOptions.Plugins.PluginsPanel;
 import com.JavaBeast.AdminPanel.Panel.ServerOptions.ServerOptionsPanel;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -13,6 +15,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -128,8 +132,8 @@ class InvClickEvent implements Listener{
                     }else if(event.getCurrentItem().equals(AdminPanel.create_GameOptions())){
                         if(event.getWhoClicked().hasPermission("ap.panel.gameoptions")){
 
-                            //TODO: open gameOptions
-                            event.getWhoClicked().sendMessage("§7[§bAdminPanel§7] §aThis function will be added soon.");
+                            event.getWhoClicked().closeInventory();
+                            new GameOptionsPanel((Player) event.getWhoClicked());
 
                         }else{
                             ((Player) event.getWhoClicked()).kickPlayer("§7[§bAdminPanel§7]\n" +
@@ -292,6 +296,91 @@ class InvClickEvent implements Listener{
                         Main.getCmd().sendMessage("§7[§bAdminPanel§7] §4ATTENTION! Player " +
                                 ""+event.getWhoClicked().getName()+"" +
                                 " tried to disable/enable the chat!");
+                    }
+
+                }
+
+            }else if(event.getClickedInventory().getTitle().equals("§bGame Options")){
+                event.setCancelled(true);
+
+                if(event.getCurrentItem() != null){
+
+                    Player player = (Player) event.getWhoClicked();
+
+                    if(event.getCurrentItem().equals(GameOptionsPanel.create_TimeChange((Player) event.getWhoClicked()))){
+
+
+                        if(player.hasPermission("ap.panel.changetime")) {
+
+                            if (player.getLocation().getWorld().getTime() <= 13000) {
+                                player.getWorld().setTime(18000);
+                                player.sendMessage("§7[§bAdminPanel§7] §aChanged time to night.");
+                            } else {
+                                player.getWorld().setTime(6000);
+                                player.sendMessage("§7[§bAdminPanel§7] §aChanged time to day.");
+                            }
+
+                            event.getWhoClicked().closeInventory();
+                            new GameOptionsPanel(player);
+                        }else{
+                            ((Player) event.getWhoClicked()).kickPlayer("§7[§bAdminPanel§7]\n" +
+                                    " §4You were kicked for bugusing.\n" +
+                                    " If this is an error please report it.\n" +
+                                    "§bhttps://discord.gg/Wv3kk3BSRM");
+
+                            Main.getCmd().sendMessage("§7[§bAdminPanel§7] §4ATTENTION! Player " +
+                                    ""+event.getWhoClicked().getName()+"" +
+                                    " tried to change the time!");
+                        }
+                    }else if(event.getCurrentItem().equals(GameOptionsPanel.create_TimeStop(player))){
+
+                        if(player.hasPermission("ap.panel.stoptime")){
+
+                            if(player.getWorld().getGameRuleValue("doDaylightCycle") == "true"){
+                                player.getWorld().setGameRuleValue("doDaylightCycle", "false");
+                                player.sendMessage("§7[§bAdminPanel§7] §aDoDaylightCycle = false");
+                            }else{
+                                player.getWorld().setGameRuleValue("doDaylightCycle", "true");
+                                player.sendMessage("§7[§bAdminPanel§7] §aDoDaylightCycle = true");
+                            }
+
+                            player.closeInventory();
+                            new GameOptionsPanel(player);
+
+                        }else{
+                            ((Player) event.getWhoClicked()).kickPlayer("§7[§bAdminPanel§7]\n" +
+                                    " §4You were kicked for bugusing.\n" +
+                                    " If this is an error please report it.\n" +
+                                    "§bhttps://discord.gg/Wv3kk3BSRM");
+
+                            Main.getCmd().sendMessage("§7[§bAdminPanel§7] §4ATTENTION! Player " +
+                                    ""+event.getWhoClicked().getName()+"" +
+                                    " tried to activate/deactivate daylightCycle!");
+                        }
+
+                    }else if(event.getCurrentItem().equals(GameOptionsPanel.create_WeatherChange())){
+
+                        if(player.hasPermission("ap.panel.weatherchange")){
+
+                            player.getWorld().setStorm(false);
+                            player.getWorld().setThundering(false);
+
+                            player.sendMessage("§7[§bAdminPanel§7] §aThe weather was cleared!");
+
+                        }else{
+                            ((Player) event.getWhoClicked()).kickPlayer("§7[§bAdminPanel§7]\n" +
+                                    " §4You were kicked for bugusing.\n" +
+                                    " If this is an error please report it.\n" +
+                                    "§bhttps://discord.gg/Wv3kk3BSRM");
+
+                            Main.getCmd().sendMessage("§7[§bAdminPanel§7] §4ATTENTION! Player " +
+                                    ""+event.getWhoClicked().getName()+"" +
+                                    " tried to clear the weather!");
+                        }
+
+                        event.getWhoClicked().closeInventory();
+                        new GameOptionsPanel((Player) event.getWhoClicked());
+
                     }
 
                 }

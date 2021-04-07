@@ -9,7 +9,7 @@ description: gui for admins to manage your minecraft server
 commands:
   admin:
     description: opens the admin panel gui or if info is added to the arguments a info will be displayed in the chat.
-    permission: Adminpanel.command.admin
+    permission: adminpanel.command.admin
     aliases:
       - ap
       - panel
