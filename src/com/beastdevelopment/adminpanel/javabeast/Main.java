@@ -1,10 +1,12 @@
 package com.beastdevelopment.adminpanel.javabeast;
 
+import com.beastdevelopment.adminpanel.javabeast.commands.PanelCommand;
 import com.beastdevelopment.adminpanel.javabeast.webpanel.WebPanel;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main extends JavaPlugin {
 
@@ -34,17 +36,24 @@ public class Main extends JavaPlugin {
         }else
             configuration.set("webPort", webPort);
 
+        if(!configuration.contains("panels")){
+            configuration.set("panels", new ArrayList<String>());
+        }
+
         saveConfig();
 
         // endregion
 
         try {
             if(webPanel) {
-                _webPanel = new WebPanel(webPort);
+                String[] panels = new String[configuration.getStringList("panels").size()];
+                _webPanel = new WebPanel(webPort, configuration.getStringList("panels").toArray(panels));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        getCommand("panel").setExecutor(new PanelCommand());
 
     }
 

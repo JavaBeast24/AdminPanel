@@ -1,8 +1,15 @@
 name: AdminPanel
-version: 0.0.1
+version: 0.0.2
 main: com.beastdevelopment.adminpanel.javabeast.Main
 api-version: 1.8
 website: http://<ip>:<port>/?usr=<usr>&pw=<pw>
 author: JavaBeast
 database: false
 description: online web panel to control the server
+commands:
+  panel:
+    description: generate a link to the panel.
+    permission: adminpanel.command.panel
+permissions:
+  adminpanel.command.panel:
+    default: op
