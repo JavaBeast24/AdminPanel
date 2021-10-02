@@ -1,5 +1,5 @@
 name: AdminPanel
-version: 0.0.2
+version: 0.0.3
 main: com.beastdevelopment.adminpanel.javabeast.Main
 api-version: 1.8
 website: http://<ip>:<port>/?usr=<usr>&pw=<pw>
